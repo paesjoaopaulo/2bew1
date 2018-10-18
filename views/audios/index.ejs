@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+
+<body>
+<div class="container">
+    <h1>
+        <%= title %>
+    </h1>
+    <form id="consultar">
+        <label for="query">Procurar</label>
+        <input id="query" name="query" class="form-control" value="<%= params.query %>">
+    </form>
+    <% if(audios.length > 0) { %>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Titulo</th>
+                <th>Descrição</th>
+                <th>Áudio</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <% for(var i = 0; i < audios.length; i++) { %>
+                <tr>
+                    <td>
+                        <%= audios[i]._id %>
+                    </td>
+                    <td>
+                        <%= audios[i].titulo %>
+                    </td>
+                    <td>
+                        <%= audios[i].descricao %>
+                    </td>
+                    <td>
+                        <audio controls>
+                            <source src='/uploads/<%= audios[i].path %>' type="audio/mp3">
+                        </audio>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <% if(audios.length == 0){ %>
+        <tr>
+            <td colspan="3">Nenhum resultado foi encontrado.</td>
+        </tr>
+    <% } %>
+</div>
+</body>
+<script type="text/javascript">
+    document.querySelector("#query").addEventListener('keyup', function (e) {
+        if (e.target.value.length == 0) {
+            this.removeAttribute('name');
+        } else {
+            this.setAttribute('name', 'query')
+        }
+    })
+</script>
+</html>
