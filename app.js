@@ -29,6 +29,11 @@ app.use(session({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+    res.locals.login = req.session.login;
+    next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/audios', audiosRouter);
