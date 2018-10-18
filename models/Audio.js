@@ -1,6 +1,7 @@
 let Model = require('./Model');
 
 module.exports = class Audio extends Model {
+
     constructor(data) {
         super(data);
         this.titulo = data.titulo;

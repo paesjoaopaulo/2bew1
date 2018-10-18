@@ -9,6 +9,8 @@ module.exports = class AudiosController extends Controller {
      * @param res
      */
     index(req, res, next) {
+        this.checkAuth(req, res);
+
         let params = req.query;
         let filter = {};
         if (typeof params.query != 'undefined') {
@@ -26,18 +28,54 @@ module.exports = class AudiosController extends Controller {
     }
 
     create(req, res, next) {
+        this.checkAuth(req, res, next);
+        console.log(req.cookies);
         res.render('audios/create', {title: 'New audio'});
     }
 
     store(req, res, next) {
+        this.checkAuth(req, res, next);
+
         let body = req.body;
-        let audio = new Audio({
-            titulo: body.titulo,
-            descricao: body.descricao,
-            path: req.file.filename
-        }).save().then((audio) => {
-            res.send(audio);
-        });
+        let errors = [];
+
+        let titulo = body.titulo;
+        let descricao = body.descricao;
+        let file = req.file;
+        let path = "";
+
+        if (file == undefined) {
+            errors['audio'] = 'Obrigatório o envio do arquivo'
+        } else {
+            path = req.file.filename;
+        }
+
+        if (titulo == null || titulo.length < 3) {
+            errors['titulo'] = 'Título inválido'
+        }
+
+        if (descricao == null || descricao.length < 6) {
+            errors['descricao'] = 'Descrição inválida'
+        }
+
+        if (file && file.extension != 'mp3') {
+            errors['descricao'] = 'Descrição inválida'
+        }
+
+        console.log(errors)
+
+        if (errors != []) {
+            res.render('auth/register', {title: 'Novo áudio', errors})
+            next()
+        }
+
+        let audio = new Audio({titulo, descricao, path})
+            .save()
+            .then((audio) => {
+                if (audio) {
+                    res.redirect('/audios');
+                }
+            });
     }
 
     /* Daqui pra baixo não foi preciso implementar no projeto 1 */
@@ -48,12 +86,14 @@ module.exports = class AudiosController extends Controller {
     }
 
     edit(req, res, next) {
+        this.checkAuth(req, res, next);
         Audio.find({id: req.params.id}).then((audio) => {
             res.send("audios/edit", {audio});
         })
     }
 
     update(req, res, next) {
+        this.checkAuth(req, res, next);
         Audio.find().then((audio) => {
             res.send(audio);
             console.log(audio);
@@ -61,6 +101,7 @@ module.exports = class AudiosController extends Controller {
     }
 
     destroy(req, res, next) {
+        this.checkAuth(req, res, next);
         Audio.find({id: req.params.id}).then((audio) => {
             audio.delete();
         })

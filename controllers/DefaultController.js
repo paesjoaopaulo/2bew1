@@ -5,6 +5,7 @@ let User = require('../models/User');
 module.exports = class DefaultController extends Controller {
 
     login(req, res) {
+        console.log(req.cookies.login)
         res.render('auth/login', {title: 'Entrar'});
     }
 
@@ -12,9 +13,10 @@ module.exports = class DefaultController extends Controller {
         let body = req.body;
         User.find({login: body.login, password: body.password}).then((user) => {
             if (user.length == 1) {
-                console.log("criar sessão")
+                req.session.login = user;
                 res.redirect("/audios");
             } else {
+                res.status(403);
                 console.log("retornar mensagem de erro na view");
                 res.render("auth/login", {error: "Credenciais inválidas", title: "Fazer login"});
             }
