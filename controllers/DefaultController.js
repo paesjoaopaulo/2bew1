@@ -51,7 +51,6 @@ module.exports = class DefaultController extends Controller {
                 })
             }
         });
-        console.log(errors);
         res.render('auth/register', {errors, title: "Registrar"});
     }
 
