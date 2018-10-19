@@ -31,35 +31,32 @@ module.exports = class DefaultController extends Controller {
         if (body.name.length < 3) {
             errors['name'] = 'Nome inválido'
         }
-        if (body.login.length < 5) {
+        if (body.login.length < 3) {
             errors['login'] = 'Login inválido'
         }
-        if (body.password.length < 5) {
+        if (body.password.length < 3) {
             errors['password'] = 'Senha curta'
         } else if (body.password != body.password_confirm) {
             errors['password'] = 'As senhas não são iguais'
         }
-
-        let userWithSameMail = User.find({login: body.login}).then((user) => {
-            if (user.length > 0) {
+        User.find({login: body.login}).then((user) => {
+            if (typeof user != 'undefined' && user.length > 0 || user._id) {
                 errors['login'] = 'Já existe um usuário com esse login';
-                res.render('auth/register', {errors, title: "Registrar"});
-
+            }
+        }).then(() => {
+            if (Object.keys(errors).length == 0) {
+                new User(body).save().then((user) => {
+                    req.session.login = user;
+                    res.redirect('/');
+                })
             }
         });
-
-        if (errors) {
-            let user = new User(body).save().then((user) => {
-                req.session.login = user;
-                res.redirect('/audios');
-
-            })
-        }
-
+        console.log(errors);
         res.render('auth/register', {errors, title: "Registrar"});
     }
 
     logout(req, res, next) {
+        this.checkAuth(req, res, next);
         req.session.destroy();
         res.redirect('/users/login');
 

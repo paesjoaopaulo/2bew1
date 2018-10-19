@@ -11,19 +11,19 @@ module.exports = class AudiosController extends Controller {
             filter =
                 {
                     $or: [
-                        { titulo: new RegExp(params.query, "i") },
-                        { descricao: new RegExp(params.query, "i") }
+                        {titulo: new RegExp(params.query, "i")},
+                        {descricao: new RegExp(params.query, "i")}
                     ]
                 }
         }
         Audio.find(filter).then((audios) => {
-            res.render('audios/index', { title: 'Todos os áudios', audios, params });
+            res.render('audios/index', {title: 'Todos os áudios', audios, params});
         });
     }
 
     create(req, res, next) {
         this.checkAuth(req, res, next);
-        res.render('audios/create', { title: 'New audio' });
+        res.render('audios/create', {title: 'New audio'});
     }
 
     store(req, res, next) {
@@ -55,17 +55,16 @@ module.exports = class AudiosController extends Controller {
             errors['descricao'] = 'Arquivo inválido'
         }
 
-        console.log(errors);
-
-        if (errors != []) {
-            res.render('audios/create', { title: 'Novo áudio', errors })
+        if (Object.keys(errors).length > 0) {
+            res.render('audios/create', {title: 'Novo áudio', errors})
         } else {
-            let audio = new Audio({ titulo, descricao, path })
+            console.log("Entrou")
+            new Audio({titulo, descricao, path})
                 .save()
                 .then((audio) => {
+                    console.log(audio)
                     if (audio) {
                         res.redirect('/audios');
-
                     }
                 });
         }
@@ -73,15 +72,15 @@ module.exports = class AudiosController extends Controller {
 
     /* Daqui pra baixo não foi preciso implementar no projeto 1 */
     show(req, res, next) {
-        Audio.find({ id: req.params.id }).then((audio) => {
-            res.render("audios/show", { audio });
+        Audio.find({id: req.params.id}).then((audio) => {
+            res.render("audios/show", {audio});
         })
     }
 
     edit(req, res, next) {
         this.checkAuth(req, res, next);
-        Audio.find({ id: req.params.id }).then((audio) => {
-            res.render("audios/edit", { audio });
+        Audio.find({id: req.params.id}).then((audio) => {
+            res.render("audios/edit", {audio});
         })
     }
 
@@ -94,7 +93,7 @@ module.exports = class AudiosController extends Controller {
 
     destroy(req, res, next) {
         this.checkAuth(req, res, next);
-        Audio.find({ id: req.params.id }).then((audio) => {
+        Audio.find({id: req.params.id}).then((audio) => {
             audio.delete();
         })
     }
