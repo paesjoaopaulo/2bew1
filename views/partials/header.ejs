@@ -12,6 +12,15 @@
 
 <body>
 <div class="container">
-    <h1>
-        <%= title %>
-    </h1>
+    <div class="row">
+        <div class="col-md-8">
+            <h1>
+                <%= title %>
+            </h1>
+        </div>
+        <div class="col-md-8">
+            <% if(login){ %>
+            <h2><%= login.name %></h2>
+            <% } %>
+        </div>
+    </div>

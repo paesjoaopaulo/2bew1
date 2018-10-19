@@ -9,7 +9,7 @@ module.exports = class Controller {
             return true;
         } else {
             res.redirect('/users/login');
-            res.end();
+
         }
     }
     

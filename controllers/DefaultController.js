@@ -14,7 +14,6 @@ module.exports = class DefaultController extends Controller {
             if (user.length == 1) {
                 req.session.login = user;
                 res.redirect("/audios");
-                res.end();
             } else {
                 res.status(403);
                 res.render("auth/login", {error: "Credenciais inválidas", title: "Fazer login"});
@@ -28,28 +27,41 @@ module.exports = class DefaultController extends Controller {
 
     doRegister(req, res, next) {
         let body = req.body;
-        
         let errors = [];
         if (body.name.length < 3) {
             errors['name'] = 'Nome inválido'
         }
-
-        if (body.password != body.password_confirm) {
+        if (body.login.length < 5) {
+            errors['login'] = 'Login inválido'
+        }
+        if (body.password.length < 5) {
+            errors['password'] = 'Senha curta'
+        } else if (body.password != body.password_confirm) {
             errors['password'] = 'As senhas não são iguais'
         }
 
         let userWithSameMail = User.find({login: body.login}).then((user) => {
-            res.render('auth/register', {error: "Já existe um usuário com o mesmo login.", title: "Registrar"});
-        })
+            if (user.length > 0) {
+                errors['login'] = 'Já existe um usuário com esse login';
+                res.render('auth/register', {errors, title: "Registrar"});
 
-        let user = new User(body).save().then((user) => {
-            res.send(user);
-        })
+            }
+        });
+
+        if (errors) {
+            let user = new User(body).save().then((user) => {
+                req.session.login = user;
+                res.redirect('/audios');
+
+            })
+        }
+
+        res.render('auth/register', {errors, title: "Registrar"});
     }
 
     logout(req, res, next) {
         req.session.destroy();
-        res.redirect('/users/login')
-        res.end();
+        res.redirect('/users/login');
+
     }
 };

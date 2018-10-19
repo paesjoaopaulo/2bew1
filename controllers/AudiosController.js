@@ -65,7 +65,7 @@ module.exports = class AudiosController extends Controller {
                 .then((audio) => {
                     if (audio) {
                         res.redirect('/audios');
-                        res.end();
+
                     }
                 });
         }
