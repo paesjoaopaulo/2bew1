@@ -23,13 +23,15 @@ app.use(express.urlencoded({extended: false}));
 app.use(session({
     secret: 'wQOGue9YoyXjDx@',
     resave: false,
+    maxAge: new Date(Date.now() + 3600000),
+    expires: new Date(Date.now() + 3600000),
     saveUninitialized: true,
     cookie: {secure: false}
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.locals.login = req.session.login;
     next();
 });
