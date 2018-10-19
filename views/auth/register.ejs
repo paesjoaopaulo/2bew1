@@ -1,7 +1,7 @@
 <%- include('../partials/header', {title}); %>
 <form action="/users/register" method="POST">
     <div class="form-group">
-        <label for="name">Name</label>
+        <label for="name">Nome</label>
         <input type="text" name="name" id="name" class="form-control <%= (typeof errors != 'undefined' && typeof errors.name != 'undefined') ? "is-invalid" : "is-valid" %>">
         <% if(typeof errors != 'undefined' && typeof errors.name != 'undefined'){ %>
             <div class="invalid-feedback"><%= errors.name %></div>
@@ -15,14 +15,14 @@
         <% } %>
     </div>
     <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Senha</label>
         <input type="password" name="password" id="password" class="form-control <%= (typeof errors != 'undefined' && typeof errors.password != 'undefined') ? "is-invalid" : "is-valid" %>">
         <% if(typeof errors != 'undefined' && typeof errors.password != 'undefined'){ %>
             <div class="invalid-feedback"><%= errors.password %></div>
         <% } %>
     </div>
     <div class="form-group">
-        <label for="password">Password Confirm</label>
+        <label for="password">Confirmar Senha</label>
         <input type="password" name="password_confirm" id="password_confirm" class="form-control">
     </div>
     <div class="form-group">

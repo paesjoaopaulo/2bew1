@@ -23,7 +23,7 @@ module.exports = class AudiosController extends Controller {
 
     create(req, res, next) {
         this.checkAuth(req, res, next);
-        res.render('audios/create', {title: 'New audio'});
+        res.render('audios/create', {title: 'Novo audio'});
     }
 
     store(req, res, next) {
